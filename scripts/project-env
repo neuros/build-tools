@@ -1,0 +1,35 @@
+##############################################################################
+#
+# Neuros Build Environment.
+#
+# Sourcing this file sets up the necessary environment to use the Neuros BSP.
+#
+##############################################################################
+
+PROJECT=PROJECT_NAME
+PRJROOT=PROJECT_DIR${PROJECT}
+TOOLCHAIN=TOOLCHAIN_DIR
+PATH=${TOOLCHAIN}/bin:${PATH}
+ROOTFS=${PRJROOT}/rootfs
+INSTALL_MOD_PATH=${ROOTFS}/fs
+SU=sudo
+MKCRAMFS=MKCRAMFSBIN
+TOOLCHAIN_ARCH=${TOOLCHAIN}/arm-linux
+TOOLCHAIN_USR_INSTALL=${TOOLCHAIN_ARCH}/usr
+
+DVEVM_INSTALL_DIR=${PRJROOT}/tievms/evm
+DSPLINK=${DVEVM_INSTALL_DIR}/dsplink_1_30_08_02/packages/dsplink
+
+NQMAKE=${TOOLCHAIN}/Qtopia/bin/qmake
+NRCC=${TOOLCHAIN}/Qtopia/bin/rcc
+
+ARCH=arm
+CROSS_COMPILE=arm-linux-
+
+export PROJECT PRJROOT TOOLCHAIN TOOLCHAIN_ARCH TOOLCHAIN_USR_INSTALL \
+DVEVM_INSTALL_DIR DSPLINK \
+PATH SU ROOTFS INSTALL_MOD_PATH MKCRAMFS ARCH CROSS_COMPILE NQMAKE NRCC
+
+alias nqmake=${TOOLCHAIN}/Qtopia/bin/qmake
+alias nrcc=${TOOLCHAIN}/Qtopia/bin/rcc
+alias nmake=${PRJROOT}/build-tools/scripts/nmake.sh

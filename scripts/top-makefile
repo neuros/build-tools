@@ -1,0 +1,57 @@
+##############################################################################
+#
+# Neuros OSD top level Makefile
+# origin: build-tools/scripts/top-makefile
+#
+##############################################################################
+
+ifndef PRJROOT
+    $(error You must first source the BSP environment: "source neuros-env")
+endif
+
+CLEAN_DIRS = kernels/linux
+
+.PHONY: config menuconfig oldconfig silentoldconfig defconfig
+
+help:
+	@echo ""
+	@echo "-- Build the entire system"
+	@echo "   1. make [X]_defconfig     # default config"
+	@echo "   1.1 make menuconfig       # further config BSP if needed (usually not)."
+	@echo "   2. make all               # make Kernel and modules and the entire system."
+	@echo "   3. make install           # this will install and create various images."
+	@echo ""
+	@echo "-- Available configs (platforms that Neuros maintains)"
+	@echo "   1. ntosd_644xA_defconfig  # Neuros dm6446 OSD revision A hardware."
+	@echo ""
+
+# Mark off the all
+all: linux
+
+config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
+# Configure Neuros BSP
+#	@$(MAKE) -C scripts/kconfig $@
+# Configure Linux Kernel
+	make -C kernels/linux $@
+# busybox config
+#	@$(MAKE) -C sysapps/busybox $@
+
+.PHONY: linux
+
+linux:
+	@$(MAKE) --no-print-directory -C kernels/linux uImage
+	@$(MAKE) --no-print-directory -C kernels/linux modules
+
+install:
+	@echo "Installing base rootfs."
+	@$(MAKE) -C rootfs $@
+	@echo "Installing kernel modules."
+	@$(MAKE) --no-print-directory -C kernels/linux modules_install
+
+.PHONY: clean mrproper help
+clean:
+	@for i in `echo $(CLEAN_DIRS)`; do \
+		$(MAKE) -C $$i $@; \
+	done
+
+	@rm *~
