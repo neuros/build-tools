@@ -54,4 +54,4 @@ clean:
 		$(MAKE) -C $$i $@; \
 	done
 
-	@rm *~
+	@rm -f *~
