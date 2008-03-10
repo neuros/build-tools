@@ -5,6 +5,29 @@
 #
 ##############################################################################
 
+## if you know what you are doing, you can uncomment the following
+## and manually set access permission, otherwise system will automatically
+## test and set your access permission for you.
+#ACCESS=[read-only | read-write]
+
+## cheap ssh access test.
+if [ -z ${ACCESS} ] ; then
+    echo "checking access permission ..."
+    ii=1
+    ACCESS=x
+    while [ $ii -le 60 -a $ACCESS != read-write ]
+    do
+	ssh git.neuros.com.cn 'uname -a' >/tmp/neuros-git-access.txt 2>/dev/null &
+	sleep 1
+	if [ ! -s /tmp/neuros-git-access.txt ] ; then
+	    ACCESS=read-only
+	else
+	    ACCESS=read-write
+	fi
+	ii=`expr $ii + 1`
+    done
+fi
+echo "Accessing repository in ${ACCESS} mode ..."
 
 ## recommended directory tree (showing public repos only)
 ##
@@ -16,18 +39,12 @@
 ##             |---- ...
 ##
 
-# Force exit on errors. Let's avoid wasting time if something goes wrong.
-set -e
-
-# public readonly clone
-#GIT_PATH_PUB=git://git.neurostechnology.com/git/osd20
-
-# writable clone
-GIT_PATH_PUB=ssh://git@git.neuros.com.cn/git/git-pub/osd20
-
-## evil private stuff
-GIT_PATH_PRIV=ssh://git@git.neuros.com.cn/git/git-priv/osd20
-
+if [ ${ACCESS} = read-only ] ; then
+    GIT_PATH_PUB=git://git.neurostechnology.com/git ;
+else
+    GIT_PATH_PUB=ssh://git@git.neuros.com.cn/git/git-pub/osd20 ;
+    GIT_PATH_PRIV=ssh://git@git.neuros.com.cn/git/git-priv/osd20 ;
+fi
 
 ########################################################################
 ## if you follow the recommended diretory tree, you don't need to modify
@@ -50,7 +67,7 @@ ls_pub()
     echo "Public repos:"
     echo ""
     for repo in "${PUBLIC_REPO[@]}" ; do
-	echo ${repo}
+	echo "  ${repo}"
     done
     echo ""
 }
@@ -61,7 +78,7 @@ ls_priv()
     echo "Private repos:"
     echo ""
     for repo in "${PRIVATE_REPO[@]}" ; do
-	echo ${repo}
+	echo "  ${repo} "
     done
     echo ""
 }
@@ -77,7 +94,7 @@ clone_pub()
 	    continue
 	fi
 
-	git clone ${GIT_PATH_PUB}/${repo} ${repo}
+	git clone ${GIT_PATH_PUB}/${repo} ${DST_PATH}/${repo}
     done
 }
 
@@ -92,7 +109,7 @@ clone_priv()
 	    continue
 	fi
 
-	git clone ${GIT_PATH_PRIV}/${repo} ${repo}
+	git clone ${GIT_PATH_PRIV}/${repo} ${DST_PATH}/${repo}
     done
 }
 
@@ -105,14 +122,16 @@ help()
     echo ""
     echo "Available commands:"
     echo ""
-    echo "  l                    : list all repos"
-    echo "  c [repo] [dst-path]  : clone [repo] to [dst-path]"
-    echo "                       : clone all to current path if no options specified"
+    echo "  list              : list all repos"
+    echo "  clone [dst-path]  : clone all repos to [dst-path]"
+    echo "                    : to current path if [dst-path] is not specified"
     echo ""
     echo "Examples:"
     echo ""
-    echo "./`basename $0` c            --- clone all repos to current path"
-    echo "./`basename $0` c repo path  --- clone repo to path [NOTWORKING]"
+    echo "./`basename $0` list            --- list all available repos"
+    echo "./`basename $0` clone           --- clone all repos to current path"
+    echo "./`basename $0` clone .         --- clone all repos to current path"
+    echo "./`basename $0` clone dst-path  --- clone all repos to dsp-path"
     echo ""
 }
 
@@ -122,13 +141,18 @@ if [ "$#" -lt "1" ]; then
     help
 else
     case $1 in
-	"l")
+	"list")
 	    ls_pub
-	    ls_priv
+	    [ ${ACCESS} = read-write ] && ls_priv
 	    ;;
-	"c")
+	"clone")
+	    if [ -z $2 ] ; then
+		DST_PATH=.
+	    else
+		DST_PATH=$2
+	    fi
 	    clone_pub
-	    clone_priv
+	    [ ${ACCESS} = read-write ] && clone_priv
 	    ;;
 	*)
 	    help
