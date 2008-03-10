@@ -1,7 +1,7 @@
 #!/bin/bash
 ##############################################################################
 #
-# Description: helper script to clone Neuros repos
+# Description: helper script to manage Neuros repos
 #
 ##############################################################################
 
@@ -38,6 +38,9 @@ echo "Accessing repository in ${ACCESS} mode ..."
 ##             |---- rootfs
 ##             |---- ...
 ##
+
+# Force exit on errors. Let's avoid wasting time if something goes wrong.
+set -e
 
 if [ ${ACCESS} = read-only ] ; then
     GIT_PATH_PUB=git://git.neurostechnology.com/git ;
@@ -86,14 +89,13 @@ ls_priv()
 clone_pub()
 {
     for repo in "${PUBLIC_REPO[@]}" ; do
-	if [ -e ${REPO_ROOT}/${repo} ]
+	if [ -e ${DST_PATH}/${repo} ]
 	then
-	    echo
-	    echo "${REPO_ROOT}/${repo} directory already exists, ignored."
-	    echo
+	    echo "${DST_PATH}/${repo} directory already exists, ignored."
 	    continue
 	fi
-
+	echo
+	echo "cloning ${DST_PATH}/${repo} ..."
 	git clone ${GIT_PATH_PUB}/${repo} ${DST_PATH}/${repo}
     done
 }
@@ -101,17 +103,39 @@ clone_pub()
 clone_priv()
 {
     for repo in "${PRIVATE_REPO[@]}" ; do
-	if [ -e ${REPO_ROOT}/${repo} ]
+	if [ -e ${DST_PATH}/${repo} ]
 	then
-	    echo
-	    echo "${REPO_ROOT}/${repo} directory already exists, ignored."
-	    echo
+	    echo "${DSP_PATH}/${repo} directory already exists, ignored."
 	    continue
 	fi
-
+	echo
+	echo "cloning ${DST_PATH}/${repo} ..."
 	git clone ${GIT_PATH_PRIV}/${repo} ${DST_PATH}/${repo}
     done
 }
+
+pull_repo()
+{
+    cd ${REPO_PATH}
+    for repo in "${PUBLIC_REPO[@]}" ; do
+	if [ -e ${REPO_PATH}/${repo} ]
+	then
+	    echo
+	    echo "pulling ${REPO_PATH}/${repo} ..."
+	    cd ${repo} && git pull && cd ..
+	fi
+    done
+
+    for repo in "${PRIVATE_REPO[@]}" ; do
+	if [ -e ${REPO_PATH}/${repo} ]
+	then
+	    echo
+	    echo "pulling ${REPO_PATH}/${repo} ..."
+	    cd ${repo} && git pull && cd ..
+	fi
+    done
+}
+
 
 help()
 {
@@ -125,6 +149,9 @@ help()
     echo "  list              : list all repos"
     echo "  clone [dst-path]  : clone all repos to [dst-path]"
     echo "                    : to current path if [dst-path] is not specified"
+    echo "  pull [repo-path]  : pull all repos under [repo-path]"
+    echo "                    : under current path if [repo-path] is not"
+    echo "                    : specified"
     echo ""
     echo "Examples:"
     echo ""
@@ -132,6 +159,9 @@ help()
     echo "./`basename $0` clone           --- clone all repos to current path"
     echo "./`basename $0` clone .         --- clone all repos to current path"
     echo "./`basename $0` clone dst-path  --- clone all repos to dsp-path"
+    echo "./`basename $0` pull            --- pull all repos under current path"
+    echo "./`basename $0` pull .          --- pull all repos under current path"
+    echo "./`basename $0` pull repo-path  --- pull all repos under repo-path"
     echo ""
 }
 
@@ -153,6 +183,14 @@ else
 	    fi
 	    clone_pub
 	    [ ${ACCESS} = read-write ] && clone_priv
+	    ;;
+	"pull")
+	    if [ -z $2 ] ; then
+		REPO_PATH=.
+	    else
+		REPO_PATH=$2
+	    fi
+	    pull_repo
 	    ;;
 	*)
 	    help
