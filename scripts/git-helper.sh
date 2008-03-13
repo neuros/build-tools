@@ -17,7 +17,7 @@ if [ -z ${ACCESS} ] ; then
     ACCESS=x
     while [ $ii -le 60 -a $ACCESS != read-write ]
     do
-	ssh git.neuros.com.cn 'uname -a' >/tmp/neuros-git-access.txt 2>/dev/null &
+	ssh git@git.neuros.com.cn 'uname -a' >/tmp/neuros-git-access.txt 2>/dev/null &
 	sleep 1
 	if [ ! -s /tmp/neuros-git-access.txt ] ; then
 	    ACCESS=read-only
