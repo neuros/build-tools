@@ -50,6 +50,14 @@ linux:
 	@$(MAKE) --no-print-directory -C kernels/linux modules
 
 install:
+	@echo "Installing u-boot"
+	@$(MAKE) --no-print-directory -C u-boot/ install
+	@echo "Installing kernel image"
+	@$(MAKE) --no-print-directory -C kernels/linux/ install
+	@mkimage -A arm -O linux -T script -C none	\
+		-a 0 -e 0 -n "autoscr script"		\
+		-d build-tools/scripts/ntosd_default_env.ascr \
+		images/default_env.img > /dev/null
 	@echo "Installing base rootfs."
 	@$(MAKE) -C rootfs $@
 	@echo "Installing kernel modules."
