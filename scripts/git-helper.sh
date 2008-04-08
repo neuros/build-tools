@@ -32,7 +32,7 @@ echo "Accessing repository in ${ACCESS} mode ..."
 ## recommended directory tree (showing public repos only)
 ##
 ##    osd-repo ----- build-tools
-##             |---- kernels
+##             |---- linux-davinci-2.6
 ##             |---- toolchains
 ##             |---- u-boot
 ##             |---- rootfs
@@ -54,7 +54,7 @@ fi
 ## anything below.
 ##
 PUBLIC_REPO=( \
-    "kernels"
+    "linux-davinci-2.6"
     "rootfs" \
     "toolchains" \
     "u-boot"

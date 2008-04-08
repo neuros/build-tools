@@ -9,7 +9,8 @@ ifndef PRJROOT
     $(error You must first source the BSP environment: "source neuros-env")
 endif
 
-CLEAN_DIRS = kernels/linux
+KERNEL_DIR := linux-davinci-2.6
+CLEAN_DIRS := $(KERNEL_DIR)
 
 .PHONY: config menuconfig oldconfig silentoldconfig defconfig
 
@@ -32,7 +33,7 @@ config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 # Configure Neuros BSP
 #	@$(MAKE) -C scripts/kconfig $@
 # Configure Linux Kernel
-	make -C kernels/linux $@
+	make -C $(KERNEL_DIR) $@
 # busybox config
 #	@$(MAKE) -C sysapps/busybox $@
 
@@ -40,20 +41,20 @@ config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 
 u-boot:
 ifeq (u-boot/include/config.mk,$(wildcard u-boot/include/config.mk))
-	@$(MAKE) --no-print-dir -C u-boot/
+	@$(MAKE) --no-print-dir -C u-boot
 else
-	@$(MAKE) --no-print-dir -C u-boot/ davinci_ntosd_644xA_config
-	@$(MAKE) --no-print-dir -C u-boot/
+	@$(MAKE) --no-print-dir -C u-boot davinci_ntosd_644xA_config
+	@$(MAKE) --no-print-dir -C u-boot
 endif	
 linux:
-	@$(MAKE) --no-print-directory -C kernels/linux uImage
-	@$(MAKE) --no-print-directory -C kernels/linux modules
+	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) uImage
+	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) modules
 
 install:
 	@echo "Installing u-boot"
-	@$(MAKE) --no-print-directory -C u-boot/ install
+	@$(MAKE) --no-print-directory -C u-boot install
 	@echo "Installing kernel image"
-	@$(MAKE) --no-print-directory -C kernels/linux/ install
+	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) install
 	@mkimage -A arm -O linux -T script -C none	\
 		-a 0 -e 0 -n "autoscr script"		\
 		-d build-tools/scripts/ntosd_default_env.ascr \
@@ -61,7 +62,7 @@ install:
 	@echo "Installing base rootfs."
 	@$(MAKE) -C rootfs $@
 	@echo "Installing kernel modules."
-	@$(MAKE) --no-print-directory -C kernels/linux modules_install
+	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) modules_install
 
 .PHONY: clean mrproper help
 clean:
