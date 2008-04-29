@@ -57,11 +57,17 @@ PUBLIC_REPO=( \
     "linux-davinci-2.6"
     "rootfs" \
     "toolchains" \
-    "u-boot"
+    "u-boot" \
+    "vlc"
 )
 
 PRIVATE_REPO=( \
-    "tievms"
+    "tievms" \
+    "msp430" \
+    "mspflash" \
+    "neuros-rtc" \
+    "production" \
+    "ticel"
 )
 
 ls_pub()
@@ -136,6 +142,28 @@ pull_repo()
     done
 }
 
+status_repo()
+{
+    cd ${REPO_PATH}
+    for repo in "${PUBLIC_REPO[@]}" ; do
+	if [ -e ${REPO_PATH}/${repo} ]
+	then
+	    echo
+	    echo "status of ${REPO_PATH}/${repo} ..."
+	    cd ${repo} && git status && cd ..
+	    cd ..
+	fi
+    done
+    for repo in "${PRIVATE_REPO[@]}" ; do
+	if [ -e ${REPO_PATH}/${repo} ]
+	then
+	    echo
+	    echo "status of ${REPO_PATH}/${repo} ..."
+	    cd ${repo} && git status && cd ..
+	    cd ..
+	fi
+    done
+}
 
 help()
 {
@@ -152,6 +180,9 @@ help()
     echo "  pull [repo-path]  : pull all repos under [repo-path]"
     echo "                    : under current path if [repo-path] is not"
     echo "                    : specified"
+    echo "  status [repo-path]: check all repos status under [repo-path]"
+    echo "                    : under current path if [repo-path] is not"
+    echo "                    : specified"
     echo ""
     echo "Examples:"
     echo ""
@@ -162,6 +193,9 @@ help()
     echo "./`basename $0` pull            --- pull all repos under current path"
     echo "./`basename $0` pull .          --- pull all repos under current path"
     echo "./`basename $0` pull repo-path  --- pull all repos under repo-path"
+    echo "./`basename $0` status          --- status of all repos under current path"
+    echo "./`basename $0` status .        --- status of all repos under current path"
+    echo "./`basename $0` status repo-path--- status of all repos under repo-path"
     echo ""
 }
 
@@ -191,6 +225,14 @@ else
 		REPO_PATH=$2
 	    fi
 	    pull_repo
+	    ;;
+	"status")
+	    if [ -z $2 ] ; then
+		REPO_PATH=.
+	    else
+		REPO_PATH=$2
+	    fi
+	    status_repo
 	    ;;
 	*)
 	    help
