@@ -65,6 +65,10 @@ DEVICES=( \
     "mtdblock1       b  31   1" \
     "mtdblock2       b  31   2" \
     "mtdblock3       b  31   3" \
+    "mtdblock4       b  31   4" \
+    "mtdblock5       b  31   5" \
+    "mtdblock6       b  31   6" \
+    "mtdblock7       b  31   7" \
     "mtd4            b  31   4" \
     "mtd5            b  31   5" \
     "mtd6            b  31   6" \
