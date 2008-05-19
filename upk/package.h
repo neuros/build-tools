@@ -35,14 +35,20 @@
 #define VERSION "3.01"
 #define NAMELEN   32
 #define VERLEN    20 /* should same as the uboot */
-#define DESCLEN   40
+#define DESCLEN   256
 
 /* image type*/
 #define IH_TYPE_INVALID		0	/* Invalid Image		*/
-#define IH_TYPE_KERNEL		1	/* OS Kernel Image		*/
-#define IH_TYPE_SCRIPT		2	/* Script file			*/
-#define IH_TYPE_UBOOT      3       /* UBOOT FILE                   */
-#define IH_TYPE_ROOTFS     4       /* CRAMFS Image                 */
+#define IH_TYPE_STANDALONE	1	/* Standalone Program		*/
+#define IH_TYPE_KERNEL		2	/* OS Kernel Image		*/
+#define IH_TYPE_RAMDISK		3	/* RAMDisk Image		*/
+#define IH_TYPE_MULTI		4	/* Multi-File Image		*/
+#define IH_TYPE_FIRMWARE	5	/* Firmware Image		*/
+#define IH_TYPE_SCRIPT		6	/* Script file			*/
+#define IH_TYPE_FILESYSTEM	7	/* Filesystem Image (any type)	*/
+#define IH_TYPE_FLATDT		8	/* Binary Flat Device Tree Blob	*/
+#define IH_TYPE_UBOOT           9
+#define IH_TYPE_ROOTFS          10
 
 /* addr in flash */
 #define UBOOT_ADDR_START      0x00018000
@@ -87,7 +93,7 @@ typedef unsigned long  uint64;
 
 typedef struct packet_header{
   uint32    p_headsize;       /* package header size         */
-  uint32    p_reserve;        /* Bit[1:0] for indicate 8M or 16M, other reserve */
+  uint32    p_reserve;        /* Bit[3]:1 OSD2.0 upk */
   uint32    p_headcrc;        /* package header crc checksum */
   uint32    p_datasize;       /* package data size           */
   uint32    p_datacrc;        /* package data crc checksum   */
@@ -124,12 +130,10 @@ typedef struct image_header {
 	uint8		ih_name[NAMELEN];	/* Image Name		*/
 } image_header_t;
 
-#define PACKAGE_ID "neuros-osd"
+#define PACKAGE_ID "neuros-osd2.0"
 typedef struct version_struct{
   uint8  upk_desc[DESCLEN];
   uint8  pack_id[NAMELEN];
-  uint8  hw1_ver[VERLEN];
-  uint8  hw2_ver[VERLEN];
   uint8  os_ver [VERLEN];
   uint8  app_ver[VERLEN];
 }version_info;

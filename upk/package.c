@@ -76,8 +76,6 @@ static void print_version_info(version_info *ver_t)
 {
     printf("ver_t->upk_desc: %s\n", ver_t->upk_desc);
     printf("ver_t->pack_id: %s\n",  ver_t->pack_id);
-    printf("ver_t->hw1_ver: %s\n",  ver_t->hw1_ver);
-    printf("ver_t->hw2_ver: %s\n",  ver_t->hw2_ver);
     printf("ver_t->os_ver : %s\n",  ver_t->os_ver);
     printf("ver_t->app_ver: %s\n",  ver_t->app_ver);
 }
@@ -276,14 +274,14 @@ static int pack_firmware(FILE *fp_w, uint32 offst, int num, char *name[])
         }
         fclose(fp_r);
 
-        iif->i_startaddr_p = curptr;
+        iif->i_startaddr_p = curptr-sizeof(version_info);
         curptr += iif->i_imagesize;
         phd->p_datasize += iif->i_imagesize;
 
         print_image_info(iif); /* print iff*/
 
         /*write image info */
-        fseek(fp_w, offst+sizeof(package_header_t)+i*sizeof(image_info_t), 0);
+        fseek(fp_w, offst+sizeof(version_info)+sizeof(package_header_t)+i*sizeof(image_info_t), SEEK_SET);
         if (fwrite(iif, sizeof(image_info_t), 1, fp_w) != 1)
         {
             printf("can not write iif into package\n");
@@ -326,8 +324,6 @@ static int pack_ver_info(FILE *fp_w, uint32 offset, char *desc)
     }
     strncpy((char *)ver_t.upk_desc, desc, DESCLEN-1);
     strncpy((char *)ver_t.pack_id, (char *)PACKAGE_ID, NAMELEN-1);
-    strncpy((char *)ver_t.hw1_ver, "D.ev", VERLEN-1);
-    strncpy((char *)ver_t.hw2_ver, "D.ev", VERLEN-1);
     strncpy((char *)ver_t.os_ver,  "0.00", VERLEN-1);
     strncpy((char *)ver_t.app_ver, "0.00", VERLEN-1);
 
