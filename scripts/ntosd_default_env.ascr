@@ -1,3 +1,5 @@
+setenv loadaddr 0x80700000
+setenv ubootaddr 0x80700200
 setenv tftp_root /images
 setenv nfs_root /home/user/rootfs/fs
 
@@ -7,7 +9,7 @@ setenv defenv_loc_cmd setenv defenv_loc \$(tftp_root)/\$(defenv_fname)
 
 setenv uboot_fname u-boot.bin
 setenv uboot_loc /images/u-boot.bin
-setenv uboot_loc_cmd setenv uboot_loc \$(tftp_root)/\$(uboot_fname)
+setenv uboot_loc_cmd setenv uboot_loc \$(tftp_root)/\$(uboot_fname)\;setenv uboot_desc \$(tftp_root)/uboot_desc
 
 setenv kernel_fname uImage
 setenv kernel_loc /images/uImage
@@ -25,6 +27,7 @@ setenv nfs_cmd setenv bootargs \$(console) root=/dev/nfs ro nfsroot=\$(serverip)
 
 setenv update-locs run uboot_loc_cmd\;run kernel_loc_cmd\;run defenv_loc_cmd\;run rootfs_nfs_loc_cmd\;saveenv
 setenv update-defenv run defenv_loc_cmd\;tftp \$(loadaddr) \$(defenv_loc)\;setenv filesize\;autoscr \$(loadaddr)\;run update-locs
+setenv update-uboot run uboot_loc_cmd\;tftp \$(loadaddr) \$(uboot_desc)\;tftp \$(ubootaddr) \$(uboot_loc)\;setenv filesize\;nand erase 18000 100000\;nand write \$(loadaddr) 18000 100000
 
 setenv update-ipdhcp setenv ip ip=::::\$(hostname)::dhcp\;saveenv
 setenv update-ipstatic setenv ip ip=\$(ipaddr):\$(serverip):\$(gatewayip):\$(netmask):\$(hostname)::off\;saveenv
