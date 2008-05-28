@@ -57,8 +57,10 @@ PUBLIC_REPO=( \
     "linux-davinci-2.6"
     "rootfs" \
     "busybox" \
+    "ti-uart-boot" \
     "toolchains" \
     "u-boot" \
+    "upk" \
     "vlc"
 )
 
