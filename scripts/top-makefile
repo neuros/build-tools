@@ -68,6 +68,8 @@ install:
 	@echo "Installing busybox."
 	@$(MAKE) --no-print-directory -C busybox install
 
+	@./images/build_pkg
+
 .PHONY: clean mrproper help
 clean:
 	@for i in `echo $(CLEAN_DIRS)`; do \

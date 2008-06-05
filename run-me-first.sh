@@ -35,6 +35,7 @@ build-tools/scripts/project-env > neuros-env )
 
 cp ${bsp_path}/build-tools/scripts/top-makefile ${bsp_path}/Makefile
 mkdir ${bsp_path}/images
+cp ${bsp_path}/build-tools/scripts/build_pkg ${bsp_path}/images/
 
 echo ''
 echo 'Neuros build system environment is now successfully setup'
