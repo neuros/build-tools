@@ -5,29 +5,11 @@
 #
 ##############################################################################
 
-## if you know what you are doing, you can uncomment the following
-## and manually set access permission, otherwise system will automatically
-## test and set your access permission for you.
-#ACCESS=[read-only | read-write]
-
-## cheap ssh access test.
-if [ -z ${ACCESS} ] ; then
-    echo "checking access permission ..."
-    ii=1
-    ACCESS=x
-    while [ $ii -le 60 -a $ACCESS != read-write ]
-    do
-	ssh git@git.neuros.com.cn 'uname -a' >/tmp/neuros-git-access.txt 2>/dev/null &
-	sleep 1
-	if [ ! -s /tmp/neuros-git-access.txt ] ; then
-	    ACCESS=read-only
-	else
-	    ACCESS=read-write
-	fi
-	ii=`expr $ii + 1`
-    done
-fi
-echo "Accessing repository in ${ACCESS} mode ..."
+## If you know what you are doing, you can uncomment the following
+## and manually set access permission, or set the ACCESS env variable,
+## otherwise system will automatically test and set access permission for you.
+## Valid access values are "read-only" or "read-write", default "read-only".
+#ACCESS=read-write
 
 ## recommended directory tree (showing public repos only)
 ##
@@ -42,19 +24,12 @@ echo "Accessing repository in ${ACCESS} mode ..."
 # Force exit on errors. Let's avoid wasting time if something goes wrong.
 set -e
 
-if [ ${ACCESS} = read-only ] ; then
-    GIT_PATH_PUB=git://git.neurostechnology.com/git ;
-else
-    GIT_PATH_PUB=ssh://git@git.neuros.com.cn/git/git-pub/osd20 ;
-    GIT_PATH_PRIV=ssh://git@git.neuros.com.cn/git/git-priv/osd20 ;
-fi
-
 ########################################################################
 ## if you follow the recommended diretory tree, you don't need to modify
 ## anything below.
 ##
 PUBLIC_REPO=( \
-    "linux-davinci-2.6"
+    "linux-davinci-2.6" \
     "rootfs" \
     "busybox" \
     "ti-uart-boot" \
@@ -202,12 +177,47 @@ help()
     echo ""
 }
 
+## cheap ssh access test.
+detect_access()
+{
+	if [ -z ${ACCESS} ] ; then
+		ACCESS=read-only
+
+		echo "Checking access permission (you may be asked confirmation from ssh)"
+		ssh git@git.neuros.com.cn 'uname -a' > /tmp/neuros-git-access.txt
+
+		if [ -s /tmp/neuros-git-access.txt ] ; then
+			ACCESS=read-write
+		fi
+	else
+		if [ ! $ACCESS = read-write ] ; then
+			# ensure legal values
+			$ACCESS=read-only
+		fi
+	fi
+	echo "Detected access mode: ${ACCESS}"
+}
+
 
 #####main
 if [ "$#" -lt "1" ]; then
     help
 else
-    case $1 in
+	# Check access if none was set on env variables or script head
+	if [ -z $ACCESS ] ; then
+		detect_access
+	fi
+
+	# Normalize value of ACCESS and set up repositories based on that value
+	if [ "${ACCESS}" = "read-write" ] ; then
+		GIT_PATH_PUB=ssh://git@git.neuros.com.cn/git/git-pub/osd20 ;
+		GIT_PATH_PRIV=ssh://git@git.neuros.com.cn/git/git-priv/osd20 ;
+	else
+		GIT_PATH_PUB=git://git.neurostechnology.com/git ;
+	fi
+	echo "Accessing reposiories as: ${ACCESS}"
+
+	case $1 in
 	"list")
 	    ls_pub
 	    [ ${ACCESS} = read-write ] && ls_priv
