@@ -184,7 +184,7 @@ detect_access()
 		ACCESS=read-only
 
 		echo "Checking access permission (you may be asked confirmation from ssh)"
-		ssh git@git.neuros.com.cn 'uname -a' > /tmp/neuros-git-access.txt
+		ssh git@git.neuros.com.cn 'uname -a' > /tmp/neuros-git-access.txt || echo "No access."
 
 		if [ -s /tmp/neuros-git-access.txt ] ; then
 			ACCESS=read-write
