@@ -47,6 +47,7 @@ else
 	@$(MAKE) --no-print-dir -C u-boot
 endif	
 linux:
+	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) ntosd_644xA_defconfig
 	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) uImage
 	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) modules
 busybox:
