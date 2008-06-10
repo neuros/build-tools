@@ -19,7 +19,7 @@ TOOLCHAIN_USR_INSTALL=${TOOLCHAIN_ARCH}/usr
 KNL_INSTALL_DIR=${PRJROOT}/linux-davinci-2.6
 
 DVEVM_INSTALL_DIR=${PRJROOT}/tievms/evm
-DSPLINK=${DVEVM_INSTALL_DIR}/dsplink_1_30_08_02/packages/dsplink
+DSPLINK=${DVEVM_INSTALL_DIR}/dsplink_140-05p1/packages/dsplink
 
 NQMAKE=${TOOLCHAIN}/Qtopia/bin/qmake
 NRCC=${TOOLCHAIN}/Qtopia/bin/rcc
