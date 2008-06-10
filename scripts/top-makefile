@@ -10,7 +10,6 @@ ifndef PRJROOT
 endif
 
 KERNEL_DIR := linux-davinci-2.6
-CLEAN_DIRS := $(KERNEL_DIR)
 
 .PHONY: config menuconfig oldconfig silentoldconfig defconfig
 
@@ -21,6 +20,7 @@ help:
 	@echo "   1.1 make menuconfig       # further config BSP if needed (usually not)."
 	@echo "   2. make all               # make Kernel and modules and the entire system."
 	@echo "   3. make install           # this will install and create various images."
+	@echo "   4. make clean             # this will clean everything, except built images."
 	@echo ""
 	@echo "-- Available configs (platforms that Neuros maintains)"
 	@echo "   1. ntosd_644xA_defconfig  # Neuros dm6446 OSD revision A hardware."
@@ -70,10 +70,10 @@ install:
 
 	@./images/build_pkg
 
-.PHONY: clean mrproper help
+.PHONY: clean help
 clean:
-	@for i in `echo $(CLEAN_DIRS)`; do \
-		$(MAKE) -C $$i $@; \
-	done
+	make -C u-boot mrproper
+	make -C $(KERNEL_DIR) mrproper
+	make -C busybox cleanall
 
 	@rm -f *~
