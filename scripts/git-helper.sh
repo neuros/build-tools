@@ -35,9 +35,11 @@ PUBLIC_REPO=( \
     "ti-uart-boot" \
     "toolchains" \
     "u-boot" \
-    "upk" \
-    "vlc"
+    "upk"
 )
+
+VLC_REPO=git://git.videolan.org/vlc.git
+VLC_NEUROS_BRANCH=0.8.6-neuros
 
 PRIVATE_REPO=( \
     "tievms" \
@@ -56,6 +58,8 @@ ls_pub()
     for repo in "${PUBLIC_REPO[@]}" ; do
 	echo "  ${repo}"
     done
+    echo "Additional code from VLC repo:"
+    echo ${VLC_REPO} " branch " ${VLC_NEUROS_BRANCH}
     echo ""
 }
 
@@ -82,6 +86,15 @@ clone_pub()
 	echo "cloning ${DST_PATH}/${repo} ..."
 	git clone ${GIT_PATH_PUB}/${repo} ${DST_PATH}/${repo}
     done
+
+    repo=vlc
+    if [ -e ${DST_PATH}/${repo} ] ; then
+       echo "${DST_PATH}/${repo} directory already exists, ignored."
+    else
+        echo "cloning " echo ${VLC_REPO} " and checking out branch " ${VLC_NEUROS_BRANCH} "..."
+	git clone ${VLC_REPO} ${DST_PATH}/${repo}
+	cd ${repo} && git checkout -b ${VLC_NEUROS_BRANCH} origin/${VLC_NEUROS_BRANCH} && git config branch.${VLC_NEUROS_BRANCH}.rebase true && cd ..
+    fi
 }
 
 clone_priv()
