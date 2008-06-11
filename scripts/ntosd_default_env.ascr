@@ -1,5 +1,5 @@
-setenv loadaddr 0x80700000
-setenv ubootaddr 0x80700800
+setenv loadaddr 0x82000000
+setenv ubootaddr 0x82000800
 setenv tftp_root /images
 setenv nfs_root /home/user/rootfs/fs
 setenv bootfile uImage
