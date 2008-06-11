@@ -1,0 +1,116 @@
+#!/bin/bash
+##############################################################################
+#
+# Description: script for generate a package with whole firmare
+#
+# Author: Terry Qiu(tqiu@neuros.com.cn)
+# version: 1.0
+#
+##############################################################################
+
+
+if [ -z ${PRJROOT} ]; then
+    echo "You must first source the BSP environment 'source neuros-env'"
+fi
+
+IMAGES=${PRJROOT}/images
+PKGTOOL_DIR=${PRJROOT}/upk
+
+ENV_IMG=default_env.img
+UBOOT_IMG=u-boot.bin
+KENEL_IMG=uImage
+JFFS2_IMG=uImage.jffs2
+YAFFS2_IMG=rootfs.yaffs2
+PKG_NAME=osd20.pkg
+DATESTR=$(date +%y%m%d)
+
+MKYAFFS2=mkyaffs2image
+PKG_TOOL=packet_osd2
+
+UBOOT_VER=osd20-02
+KERNEL_VER=osd20-02
+ROOTFS_VER=osd20-02
+
+UBOOT_VER_FILE=u-boot.version
+KERNEL_VER_FILE=uImage.version
+ROOTFS_VER_FILE=rootfs.version
+
+# check mkfs.jffs2 util
+MKJFFS2=$(which mkfs.jffs2 2>/dev/null)
+if [ -z "${MKJFFS2}" ] ; then
+    echo ""
+    echo "You don't have mkfs.jffs2 in your PC, "
+    echo "Please install the mtd-utils package."
+    exit 1
+else
+    echo ""
+    echo "MKJFFS2 = ${MKJFFS2}"
+fi
+
+echo "cd  ${IMAGES}"
+cd ${IMAGES}
+
+#
+echo ""
+echo "Check if the images are installed"
+if [ ! -r ${ENV_IMG} ]; then
+    echo ""
+    echo "${ENV_IMG} isn't installed"
+    echo " "
+    exit 1
+elif [ ! -r ${UBOOT_IMG} ]; then
+    echo ""
+    echo "${UBOOT_IMG} isn't installed"
+    echo ""
+    exit 1
+elif [ ! -r ${KENEL_IMG} ]; then
+    echo ""
+    echo "${KENEL_IMG} isn't installed"
+    echo ""
+    exit 1
+fi
+
+#
+echo ""
+echo "build uImage.jffs2 image"
+mkdir temp
+cp uImage temp/
+echo "${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 -n"
+${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 --pad=0x500000 -n
+rm -rf temp/
+
+#
+echo ""
+echo "compile build mkyaffs2image util"
+echo "make install -C ${KNL_INSTALL_DIR}/fs/yaffs2/utils/"
+make install -C ${KNL_INSTALL_DIR}/fs/yaffs2/utils/
+if [ ! -r ${MKYAFFS2} ] ; then
+    echo ""
+    echo "${MKYAFFS2} isn't installed correctly"
+    exit 1
+fi
+
+#
+echo ""
+echo "build rootfs.yaffs2 image"
+echo "./${MKYAFFS2} ${INSTALL_MOD_PATH} ${YAFFS2_IMG}"
+./${MKYAFFS2} ${INSTALL_MOD_PATH} ${YAFFS2_IMG} > /dev/null
+chmod a+r ${YAFFS2_IMG}
+
+# compile package tool
+echo ""
+echo "make install -C ${PKGTOOL_DIR}"
+make install -C ${PKGTOOL_DIR}
+
+# version file
+echo "${UBOOT_VER}" > ${UBOOT_VER_FILE}
+echo "${KERNEL_VER}" > ${KERNEL_VER_FILE}
+echo "${ROOTFS_VER}" > ${ROOTFS_VER_FILE}
+
+# generate the osd20.pkg
+echo ""
+echo "./${PKG_TOOL} ${PKG_NAME} 'Developer UPK on ${DATESTR}' ${ENV_IMG} ${UBOOT_IMG} ${JFFS2_IMG} ${YAFFS2_IMG}"
+./${PKG_TOOL} ${PKG_NAME} "Developer UPK on ${DATESTR}" ${ENV_IMG} ${UBOOT_IMG} ${JFFS2_IMG} ${YAFFS2_IMG}
+
+
+exit 0
