@@ -34,7 +34,7 @@ sed \
 build-tools/scripts/project-env > neuros-env )
 
 cp ${bsp_path}/build-tools/scripts/top-makefile ${bsp_path}/Makefile
-mkdir ${bsp_path}/images
+mkdir -p ${bsp_path}/images
 cp ${bsp_path}/build-tools/scripts/build_pkg ${bsp_path}/images/
 
 echo ''
