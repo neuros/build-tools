@@ -94,6 +94,7 @@ fi
 echo ""
 echo "build rootfs.yaffs2 image"
 echo "./${MKYAFFS2} ${INSTALL_MOD_PATH} ${YAFFS2_IMG}"
+${FAKESU} -i ${ROOTFS}/fakeroot_state -s ${ROOTFS}/fakeroot_state -- \
 ./${MKYAFFS2} ${INSTALL_MOD_PATH} ${YAFFS2_IMG} > /dev/null
 chmod a+r ${YAFFS2_IMG}
 
