@@ -21,8 +21,8 @@ KNL_INSTALL_DIR=${PRJROOT}/linux-davinci-2.6
 
 DVEVM_INSTALL_DIR=${PRJROOT}/tievms/evm
 
-NQMAKE=${TOOLCHAIN}/Qtopia/bin/qmake
-NRCC=${TOOLCHAIN}/Qtopia/bin/rcc
+NQMAKE=${TOOLCHAIN}/Qt/bin/qmake
+NRCC=${TOOLCHAIN}/Qt/bin/rcc
 
 ARCH=arm
 CROSS_COMPILE=arm-linux-
@@ -31,6 +31,6 @@ export PROJECT PRJROOT TOOLCHAIN TOOLCHAIN_ARCH TOOLCHAIN_USR_INSTALL \
 KNL_INSTALL_DIR DVEVM_INSTALL_DIR \
 PATH SU FAKESU ROOTFS INSTALL_MOD_PATH MKCRAMFS ARCH CROSS_COMPILE NQMAKE NRCC
 
-alias nqmake=${TOOLCHAIN}/Qtopia/bin/qmake
-alias nrcc=${TOOLCHAIN}/Qtopia/bin/rcc
+alias nqmake=${TOOLCHAIN}/Qt/bin/qmake
+alias nrcc=${TOOLCHAIN}/Qt/bin/rcc
 alias nmake=${PRJROOT}/build-tools/scripts/nmake.sh
