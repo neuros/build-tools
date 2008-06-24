@@ -21,6 +21,10 @@ KNL_INSTALL_DIR=${PRJROOT}/linux-davinci-2.6
 
 DVEVM_INSTALL_DIR=${PRJROOT}/tievms/evm
 
+# This is needed for using the toolchain libraries with libtool, as
+# they rely on this variable to find the actual installation path.
+CROSS_COMPILE_PREFIX=$TOOLCHAIN
+
 NQMAKE=${TOOLCHAIN}/Qt/bin/qmake
 NRCC=${TOOLCHAIN}/Qt/bin/rcc
 
@@ -28,7 +32,7 @@ ARCH=arm
 CROSS_COMPILE=arm-linux-
 
 export PROJECT PRJROOT TOOLCHAIN TOOLCHAIN_ARCH TOOLCHAIN_USR_INSTALL \
-KNL_INSTALL_DIR DVEVM_INSTALL_DIR \
+KNL_INSTALL_DIR DVEVM_INSTALL_DIR CROSS_COMPILE_PREFIX \
 PATH SU FAKESU ROOTFS INSTALL_MOD_PATH MKCRAMFS ARCH CROSS_COMPILE NQMAKE NRCC
 
 alias nqmake=${TOOLCHAIN}/Qt/bin/qmake
