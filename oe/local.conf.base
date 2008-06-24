@@ -1,0 +1,25 @@
+BBFILES = "##oepath##/packages/*/*.bb"
+DISTRO = "angstrom-2008.1"
+MACHINE = "neuros-osd2"
+
+TMPDIR = "##oebase##/${DISTRO}-tmp"
+DL_DIR = "##oebase##/downloads"
+
+# This will shave off a lot of host dependencies 
+# that are used only to generate glibc locales, 
+# which we can live safely without for a while.
+ENABLE_BINARY_LOCALE_GENERATION = "0"
+
+# Uncomment this to enable parallel make
+# PARALLEL_MAKE = "-j 4"
+
+# Local overlay for recipes.
+# This allow us to override some of the upstream recipes from oe.org
+# with our own, so we can fix and change things wihthout depending 
+# on upstream too much.
+BBFILES += " ##localpackages##/packages/*.bb"
+BBFILE_COLLECTIONS = "upstream local"
+BBFILE_PATTERN_upstream = "##oepath##/packages/"
+BBFILE_PATTERN_local = "##localpackages##/packages/"
+BBFILE_PRIORITY_upstream = "5"
+BBFILE_PRIORITY_local = "10"
