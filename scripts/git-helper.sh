@@ -1,4 +1,4 @@
-4#!/bin/bash
+#!/bin/bash
 ##############################################################################
 #
 # Description: helper script to manage Neuros repos
@@ -36,8 +36,7 @@ PUBLIC_REPO=( \
     "ti-uart-boot" \
     "toolchains" \
     "u-boot" \
-    "upk" \
-    "external-components" \
+    "upk"
 )
 
 VLC_REPO=git://git.videolan.org/vlc.git
