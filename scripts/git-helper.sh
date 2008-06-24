@@ -1,4 +1,4 @@
-#!/bin/bash
+4#!/bin/bash
 ##############################################################################
 #
 # Description: helper script to manage Neuros repos
@@ -36,7 +36,8 @@ PUBLIC_REPO=( \
     "ti-uart-boot" \
     "toolchains" \
     "u-boot" \
-    "upk"
+    "upk" \
+    "external-components" \
 )
 
 VLC_REPO=git://git.videolan.org/vlc.git
@@ -92,7 +93,7 @@ clone_pub()
     if [ -e ${DST_PATH}/${repo} ] ; then
        echo "${DST_PATH}/${repo} directory already exists, ignored."
     else
-        echo "cloning " echo ${VLC_REPO} " and checking out branch " ${VLC_NEUROS_BRANCH} "..."
+        echo "cloning " ${VLC_REPO} " and checking out branch " ${VLC_NEUROS_BRANCH} "..."
 	git clone ${VLC_REPO} ${DST_PATH}/${repo}
 	cd ${repo} && git checkout -b ${VLC_NEUROS_BRANCH} origin/${VLC_NEUROS_BRANCH} && git config branch.${VLC_NEUROS_BRANCH}.rebase true && cd ..
     fi
