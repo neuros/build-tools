@@ -121,7 +121,7 @@ pull_repo()
 	then
 	    echo
 	    echo "pulling ${REPO_PATH}/${repo} ..."
-	    cd ${repo} && git pull && cd ..
+	    cd ${repo} && git pull --rebase && cd ..
 	fi
     done
 
@@ -130,7 +130,7 @@ pull_repo()
 	then
 	    echo
 	    echo "pulling ${REPO_PATH}/${repo} ..."
-	    cd ${repo} && git pull && cd ..
+	    cd ${repo} && git pull --rebase && cd ..
 	fi
     done
 }
