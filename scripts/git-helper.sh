@@ -36,7 +36,8 @@ PUBLIC_REPO=( \
     "ti-uart-boot" \
     "toolchains" \
     "u-boot" \
-    "upk"
+    "upk" \
+    "external-components" \
 )
 
 VLC_REPO=git://git.videolan.org/vlc.git
