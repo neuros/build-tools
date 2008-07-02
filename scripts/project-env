@@ -21,6 +21,7 @@ KNL_INSTALL_DIR=${PRJROOT}/linux-davinci-2.6
 
 DVEVM_INSTALL_DIR=${PRJROOT}/tievms/evm
 
+TICEL_INSTALL_DIR=${PRJROOT}/ticel
 # This is needed for using the toolchain libraries with libtool, as
 # they rely on this variable to find the actual installation path.
 CROSS_COMPILE_PREFIX=$TOOLCHAIN
