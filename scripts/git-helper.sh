@@ -37,6 +37,7 @@ PUBLIC_REPO=( \
     "toolchains" \
     "u-boot" \
     "upk" \
+    "app-demos" \
     "external-components" \
 )
 
