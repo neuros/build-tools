@@ -44,6 +44,7 @@ PUBLIC_APP_REPO=( \
     "app-demos" \
     "app-nwm" \
     "app-photoalbum" \
+    "app-scheduler" \
 )
 
 APP_DIR=applications
