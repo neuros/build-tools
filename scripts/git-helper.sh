@@ -37,10 +37,16 @@ PUBLIC_REPO=( \
     "toolchains" \
     "u-boot" \
     "upk" \
-    "app-demos" \
     "external-components" \
 )
 
+PUBLIC_APP_REPO=( \
+    "app-demos" \
+    "app-nwm" \
+    "app-photoalbum" \
+)
+
+APP_DIR=applications
 VLC_REPO=git://git.videolan.org/vlc.git
 VLC_NEUROS_BRANCH=0.8.6-neuros
 
@@ -61,6 +67,9 @@ ls_pub()
     for repo in "${PUBLIC_REPO[@]}" ; do
 	echo "  ${repo}"
     done
+    for repo in "${PUBLIC_APP_REPO[@]}" ; do
+	echo "  ${APP_DIR}/${repo}"
+    done
     echo "Additional code from VLC repo:"
     echo ${VLC_REPO} " branch " ${VLC_NEUROS_BRANCH}
     echo ""
@@ -79,6 +88,32 @@ ls_priv()
 
 clone_pub()
 {
+    for repo in "${PUBLIC_REPO[@]}" ; do
+	if [ -e ${DST_PATH}/${repo} ]
+	then
+	    echo "${DST_PATH}/${repo} directory already exists, ignored."
+	    continue
+	fi
+	echo
+	echo "cloning ${DST_PATH}/${repo} ..."
+	git clone ${GIT_PATH_PUB}/${repo} ${DST_PATH}/${repo}
+    done
+
+    if [ ! -e ${APP_DIR} ]
+    then
+	mkdir ${APP_DIR}
+    fi
+    for repo in "${PUBLIC_APP_REPO[@]}" ; do
+	if [ -e ${APP_DST_PATH}/${repo} ]
+	then
+	    echo "${APP_DST_PATH}/${repo} directory already exists, ignored."
+	    continue
+	fi
+	echo
+	echo "cloning ${DST_PATH}/${repo} ..."
+	git clone ${GIT_PATH_PUB}/${repo} ${APP_DST_PATH}/${repo}
+    done
+    
     for repo in "${PUBLIC_REPO[@]}" ; do
 	if [ -e ${DST_PATH}/${repo} ]
 	then
@@ -116,47 +151,81 @@ clone_priv()
 
 pull_repo()
 {
+    set +e
     cd ${REPO_PATH}
     for repo in "${PUBLIC_REPO[@]}" ; do
-	if [ -e ${REPO_PATH}/${repo} ]
+	if [ -e ${repo} ]
 	then
 	    echo
 	    echo "pulling ${REPO_PATH}/${repo} ..."
-	    cd ${repo} && git pull --rebase && cd ..
+	    cd ${repo} && git pull --rebase
+	    cd ..
 	fi
     done
 
     for repo in "${PRIVATE_REPO[@]}" ; do
-	if [ -e ${REPO_PATH}/${repo} ]
+	if [ -e ${repo} ]
 	then
 	    echo
 	    echo "pulling ${REPO_PATH}/${repo} ..."
-	    cd ${repo} && git pull --rebase && cd ..
+	    cd ${repo} && git pull --rebase
+	    cd ..
 	fi
     done
+    if [ -e ${APP_REPO_PATH} ]
+    then
+	cd ${APP_REPO_PATH}
+	for repo in "${PUBLIC_APP_REPO[@]}" ; do
+	    if [ -e ${repo} ]
+	    then
+		echo
+		echo "pulling ${APP_REPO_PATH}/${repo} ..."
+		cd ${repo} && git pull --rebase
+		cd ..
+	    fi
+	done
+	cd ..
+    fi
+    set -e
 }
 
 status_repo()
 {
+    set +e
     cd ${REPO_PATH}
     for repo in "${PUBLIC_REPO[@]}" ; do
-	if [ -e ${REPO_PATH}/${repo} ]
+	if [ -e ${repo} ]
 	then
 	    echo
 	    echo "status of ${REPO_PATH}/${repo} ..."
-	    cd ${repo} && git status && cd ..
+	    cd ${repo} && git status
 	    cd ..
 	fi
     done
     for repo in "${PRIVATE_REPO[@]}" ; do
-	if [ -e ${REPO_PATH}/${repo} ]
+	if [ -e ${repo} ]
 	then
 	    echo
 	    echo "status of ${REPO_PATH}/${repo} ..."
-	    cd ${repo} && git status && cd ..
+	    cd ${repo} && git status
 	    cd ..
 	fi
     done
+    if [ -e ${APP_REPO_PATH} ]
+    then
+	cd ${APP_REPO_PATH}
+	for repo in "${PUBLIC_APP_REPO[@]}" ; do
+	    if [ -e ${repo} ]
+	    then
+		echo
+		echo "status of ${APP_REPO_PATH}/${repo} ..."
+		cd ${repo} && git status
+		cd ..
+	    fi
+	done
+	cd ..
+    fi
+    set -e
 }
 
 help()
@@ -241,8 +310,9 @@ else
 	"clone")
 	    if [ -z $2 ] ; then
 		DST_PATH=.
+		APP_DST_PATH=./${APP_DIR}
 	    else
-		DST_PATH=$2
+		DST_PATH=$2	
 	    fi
 	    clone_pub
 	    [ ${ACCESS} = read-write ] && clone_priv
@@ -250,6 +320,7 @@ else
 	"pull")
 	    if [ -z $2 ] ; then
 		REPO_PATH=.
+		APP_REPO_PATH=./${APP_DIR}
 	    else
 		REPO_PATH=$2
 	    fi
@@ -258,6 +329,7 @@ else
 	"status")
 	    if [ -z $2 ] ; then
 		REPO_PATH=.
+		APP_REPO_PATH=./${APP_DIR}
 	    else
 		REPO_PATH=$2
 	    fi
