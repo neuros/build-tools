@@ -47,7 +47,13 @@ PUBLIC_APP_REPO=( \
     "app-scheduler" \
 )
 
+PUBLIC_LIB_REPO=( \
+    "lib-widgets" \
+    "lib-nativeutils" \
+)
+
 APP_DIR=applications
+LIB_DIR=libraries
 VLC_REPO=git://git.videolan.org/vlc.git
 VLC_NEUROS_BRANCH=0.8.6-neuros
 
@@ -70,6 +76,9 @@ ls_pub()
     done
     for repo in "${PUBLIC_APP_REPO[@]}" ; do
 	echo "  ${APP_DIR}/${repo}"
+    done
+    for repo in "${PUBLIC_LIB_REPO[@]}" ; do
+	echo "  ${LIB_DIR}/${repo}"
     done
     echo "Additional code from VLC repo:"
     echo ${VLC_REPO} " branch " ${VLC_NEUROS_BRANCH}
@@ -113,6 +122,21 @@ clone_pub()
 	echo
 	echo "cloning ${DST_PATH}/${repo} ..."
 	git clone ${GIT_PATH_PUB}/${repo} ${APP_DST_PATH}/${repo}
+    done
+
+    if [ ! -e ${LIB_DIR} ]
+    then
+	mkdir ${LIB_DIR}
+    fi
+    for repo in "${PUBLIC_LIB_REPO[@]}" ; do
+	if [ -e ${LIB_DST_PATH}/${repo} ]
+	then
+	    echo "${LIB_DST_PATH}/${repo} directory already exists, ignored."
+	    continue
+	fi
+	echo
+	echo "cloning ${DST_PATH}/${repo} ..."
+	git clone ${GIT_PATH_PUB}/${repo} ${LIB_DST_PATH}/${repo}
     done
     
     for repo in "${PUBLIC_REPO[@]}" ; do
@@ -181,6 +205,20 @@ pull_repo()
 	    then
 		echo
 		echo "pulling ${APP_REPO_PATH}/${repo} ..."
+		cd ${repo} && git pull --rebase
+		cd ..
+	    fi
+	done
+	cd ..
+    fi
+    if [ -e ${LIB_REPO_PATH} ]
+    then
+	cd ${LIB_REPO_PATH}
+	for repo in "${PUBLIC_LIB_REPO[@]}" ; do
+	    if [ -e ${repo} ]
+	    then
+		echo
+		echo "pulling ${LIB_REPO_PATH}/${repo} ..."
 		cd ${repo} && git pull --rebase
 		cd ..
 	    fi
@@ -312,6 +350,7 @@ else
 	    if [ -z $2 ] ; then
 		DST_PATH=.
 		APP_DST_PATH=./${APP_DIR}
+		LIB_DST_PATH=./${LIB_DIR}
 	    else
 		DST_PATH=$2	
 	    fi
@@ -322,6 +361,7 @@ else
 	    if [ -z $2 ] ; then
 		REPO_PATH=.
 		APP_REPO_PATH=./${APP_DIR}
+		LIB_REPO_PATH=./${LIB_DIR}
 	    else
 		REPO_PATH=$2
 	    fi
@@ -331,6 +371,7 @@ else
 	    if [ -z $2 ] ; then
 		REPO_PATH=.
 		APP_REPO_PATH=./${APP_DIR}
+		LIB_REPO_PATH=./${LIB_DIR}
 	    else
 		REPO_PATH=$2
 	    fi
