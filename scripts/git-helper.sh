@@ -32,7 +32,6 @@ PUBLIC_REPO=( \
     "linux-davinci-2.6" \
     "rootfs" \
     "busybox" \
-    "qt-embedded" \
     "ti-uart-boot" \
     "toolchains" \
     "u-boot" \
