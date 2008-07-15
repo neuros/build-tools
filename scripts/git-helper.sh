@@ -37,6 +37,7 @@ PUBLIC_REPO=( \
     "u-boot" \
     "upk" \
     "external-components" \
+    "qt-plugins" \
 )
 
 PUBLIC_APP_REPO=( \
@@ -44,11 +45,13 @@ PUBLIC_APP_REPO=( \
     "app-nwm" \
     "app-photoalbum" \
     "app-scheduler" \
+    "app-vplayer" \
 )
 
 PUBLIC_LIB_REPO=( \
     "lib-widgets" \
     "lib-nativeutils" \
+    "lib-gui" \
 )
 
 APP_DIR=applications
