@@ -27,7 +27,7 @@ help:
 	@echo ""
 
 # Mark off the all
-all: u-boot linux busybox
+all: u-boot linux busybox applications
 
 config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 # Configure Neuros BSP
@@ -53,6 +53,9 @@ linux:
 busybox:
 	@$(MAKE) --no-print-directory -C busybox all
 
+applications:
+	@$(MAKE) --no-print-directory -C applications/app-demos
+
 install:
 	@echo "Installing u-boot"
 	@$(MAKE) --no-print-directory -C u-boot install
@@ -68,6 +71,7 @@ install:
 	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) modules_install
 	@echo "Installing busybox."
 	@$(MAKE) --no-print-directory -C busybox install
+	@$(MAKE) --no-print-directory -C applications/app-demos install
 
 	@./images/build_pkg
 
