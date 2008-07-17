@@ -227,6 +227,11 @@ pull_repo()
 	done
 	cd ..
     fi
+
+    echo
+    echo "pulling ${LIB_REPO_PATH}/vlc ..."
+    cd vlc && git pull --rebase
+
     set -e
 }
 
@@ -266,6 +271,11 @@ status_repo()
 	done
 	cd ..
     fi
+    
+    echo
+    echo "status of ${APP_REPO_PATH}/vlc ..."
+    cd vlc && git status
+    
     set -e
 }
 
