@@ -37,6 +37,7 @@ PUBLIC_REPO=( \
     "u-boot" \
     "upk" \
     "external-components" \
+    "binary-components" \
     "qt-plugins" \
 )
 
