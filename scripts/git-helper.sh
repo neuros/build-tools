@@ -47,6 +47,7 @@ PUBLIC_APP_REPO=( \
     "app-photoalbum" \
     "app-scheduler" \
     "app-vplayer" \
+    "app-mainmenu" \
 )
 
 PUBLIC_LIB_REPO=( \
