@@ -27,8 +27,11 @@ echo "####### BUILDING VLC ########"
 # install in the rootfs with a lot of cruft, so for now we copy this, install into a staging area,
 # clean the cruft and then install to rootfs.
 
-CFLAGS="-I$KNL_INSTALL_DIR/usr/include -I$TOOLCHAIN/target/usr/include -msoft-float" \
-CXXLAGS="-I$KNL_INSTALL_DIR/usr/include -I$TOOLCHAIN/target/usr/include -msoft-float" \
+# Please notice that the CFLAGS and CXXFLAGS are changed so that they point to <kernel>/include instead
+# of <kernel>/usr/include. This was done so we don't need to run headers_install during the build, which
+# is useless since the headers are there already anyway, just in a different dir.
+CFLAGS="-I$KNL_INSTALL_DIR/include -I$TOOLCHAIN/target/usr/include -msoft-float" \
+CXXLAGS="-I$KNL_INSTALL_DIR/include -I$TOOLCHAIN/target/usr/include -msoft-float" \
 LDFLAGS="-Wl,-z,defs" \
 PKG_CONFIG_LIBDIR=${PRJROOT}/vlc/extras/contrib/lib/pkgconfig \
 ../configure \
