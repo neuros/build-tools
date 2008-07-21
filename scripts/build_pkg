@@ -47,6 +47,16 @@ else
     echo "MKJFFS2 = ${MKJFFS2}"
 fi
 
+# check mkyaffs2image util
+if [ ! -x ${IMAGES}/${MKYAFFS2} ]
+then
+	echo ""
+	echo "${MKYAFFS2} util not found in directory ${IMAGES}"
+	echo "Please run make in external-components directory first."
+	echo ""
+	exit 1
+fi
+
 echo "cd  ${IMAGES}"
 cd ${IMAGES}
 
@@ -78,17 +88,6 @@ cp uImage temp/
 echo "${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 -n"
 ${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 --pad=0x500000 -n
 rm -rf temp/
-
-#
-echo ""
-echo "compile build mkyaffs2image util"
-echo "make install -C ${KNL_INSTALL_DIR}/fs/yaffs2/utils/"
-make install -C ${KNL_INSTALL_DIR}/fs/yaffs2/utils/
-if [ ! -r ${MKYAFFS2} ] ; then
-    echo ""
-    echo "${MKYAFFS2} isn't installed correctly"
-    exit 1
-fi
 
 #
 echo ""
