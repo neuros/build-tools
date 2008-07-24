@@ -35,8 +35,8 @@ setenv ide_params hda=noprobe hdb=noprobe
 setenv ip ip=\192.168.1.100:\192.168.1.1:\192.168.1.1:\255.255.255.0:\neuros::off
 
 setenv nfs_mount_params udp,v3,rsize=4096,wsize=4096
-setenv nfs_cmd setenv bootargs \$(console) root=/dev/nfs rw nfsroot=\$(serverip):\$(rootfs_nfs_loc),\$(nfs_mount_params) \$(ip) \$(mem_reserve) \$(video_params) \$(ide_params)
-setenv yaffs_cmd setenv bootargs \$(console) root=/dev/mtdblock4 rw \$(ip) \$(mem_reserve) \$(video_params) \$(ide_params)
+setenv nfs_cmd setenv bootargs \$(console) root=/dev/nfs rw nfsroot=\$(serverip):\$(rootfs_nfs_loc),\$(nfs_mount_params) \$(ip) \$(mem_reserve) \$(ide_params)
+setenv yaffs_cmd setenv bootargs \$(console) root=/dev/mtdblock4 rw \$(ip) \$(mem_reserve) \$(ide_params)
 
 setenv update-locs run uboot_loc_cmd\;run kernel_loc_cmd\;run jffs2_loc_cmd\;run defenv_loc_cmd\;run rootfs_nfs_loc_cmd\;saveenv
 setenv update-defenv run defenv_loc_cmd\;tftp \$(loadaddr) \$(defenv_loc)\;setenv filesize\;autoscr \$(loadaddr)\;run update-locs
