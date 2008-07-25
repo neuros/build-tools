@@ -52,7 +52,7 @@ if [ ! -x ${IMAGES}/${MKYAFFS2} ]
 then
 	echo ""
 	echo "${MKYAFFS2} util not found in directory ${IMAGES}"
-	echo "Please run make in external-components directory first."
+	echo "Please run make in build-tools/yaffs-tools directory first."
 	echo ""
 	exit 1
 fi

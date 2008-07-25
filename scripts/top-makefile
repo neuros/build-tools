@@ -72,6 +72,7 @@ install:
 	@echo "Installing busybox."
 	@$(MAKE) --no-print-directory -C busybox install
 	@$(MAKE) --no-print-directory -C applications/app-demos install
+	@$(MAKE) --no-print-directory -C build-tools/yaffs-tools install
 
 	@./images/build_pkg
 
