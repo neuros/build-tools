@@ -63,7 +63,6 @@ echo "####### PREPARING VLC BUILD ENV ########"
 
 if [ ! -f configure ] ; then
    ./bootstrap
-   exit 0
 fi
 
 echo "####### BUILDING VLC ########"
