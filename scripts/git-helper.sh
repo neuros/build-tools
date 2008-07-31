@@ -281,6 +281,66 @@ status_repo()
     set -e
 }
 
+pristine_repo()
+{
+    set +e
+    cd ${REPO_PATH}
+    for repo in "${PUBLIC_REPO[@]}" ; do
+	if [ -e ${repo} ]
+	then
+	    echo
+	    echo "cleansing ${REPO_PATH}/${repo} ..."
+	    cd ${repo} && git clean -dfx && git reset --hard HEAD
+	    cd ..
+	fi
+    done
+
+    for repo in "${PRIVATE_REPO[@]}" ; do
+	if [ -e ${repo} ]
+	then
+	    echo
+	    echo "cleansing ${REPO_PATH}/${repo} ..."
+	    cd ${repo} && git clean -dfx && git reset --hard HEAD
+	    cd ..
+	fi
+    done
+    if [ -e ${APP_REPO_PATH} ]
+    then
+	cd ${APP_REPO_PATH}
+	for repo in "${PUBLIC_APP_REPO[@]}" ; do
+	    if [ -e ${repo} ]
+	    then
+		echo
+		echo "cleansing ${REPO_PATH}/${repo} ..."
+	    	cd ${repo} && git clean -dfx && git reset --hard HEAD
+		cd ..
+	    fi
+	done
+	cd ..
+    fi
+    if [ -e ${LIB_REPO_PATH} ]
+    then
+	cd ${LIB_REPO_PATH}
+	for repo in "${PUBLIC_LIB_REPO[@]}" ; do
+	    if [ -e ${repo} ]
+	    then
+		echo
+		echo "cleansing ${REPO_PATH}/${repo} ..."
+	    	cd ${repo} && git clean -dfx && git reset --hard HEAD
+		cd ..
+	    fi
+	done
+	cd ..
+    fi
+
+    echo
+    echo "cleansing ${LIB_REPO_PATH}/vlc ..."
+    cd vlc && git clean -fxd && git reset --hard HEAD
+
+    set -e
+}
+
+
 help()
 {
     echo ""
@@ -299,6 +359,9 @@ help()
     echo "  status [repo-path]: check all repos status under [repo-path]"
     echo "                    : under current path if [repo-path] is not"
     echo "                    : specified"
+    echo "  pristine [repo-path] : clean everything from [repo-path] that was"
+    echo "                    : not originally in git, then revert all files"
+    echo "                    : that are not committed to git HEAD."
     echo ""
     echo "Examples:"
     echo ""
@@ -390,6 +453,16 @@ else
 		REPO_PATH=$2
 	    fi
 	    status_repo
+	    ;;
+	"pristine")
+	    if [ -z $2 ] ; then
+		REPO_PATH=.
+		APP_REPO_PATH=./${APP_DIR}
+		LIB_REPO_PATH=./${LIB_DIR}
+	    else
+		REPO_PATH=$2
+	    fi
+	    pristine_repo
 	    ;;
 	*)
 	    help
