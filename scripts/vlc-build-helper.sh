@@ -51,10 +51,8 @@ fi
 echo "####### BUILDING VLC DEPENDENCIES ########"
 
 cd vlc/extras/contrib
-if [ ! -f Makefile ] ; then
-   echo "++++++++++++++++++++++++++ NO CONFIGURE +++++++++++++++++++++++"
+if [ ! -f config.mak -o ! -f distro.mak ] ; then
    ./bootstrap arm-linux davinci
-   exit 0
 fi
 make
 cd ../..
