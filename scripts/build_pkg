@@ -86,7 +86,7 @@ echo "build uImage.jffs2 image"
 mkdir temp
 cp uImage temp/
 echo "${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 -n"
-${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 --pad=0x500000 -n
+${MKJFFS2} -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 --pad=0x400000 -n
 rm -rf temp/
 
 #
