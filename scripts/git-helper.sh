@@ -48,6 +48,7 @@ PUBLIC_APP_REPO=( \
     "app-scheduler" \
     "app-vplayer" \
     "app-mainmenu" \
+    "app-filemanager" \
 )
 
 PUBLIC_LIB_REPO=( \
