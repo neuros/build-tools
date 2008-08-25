@@ -40,7 +40,7 @@ setenv yaffs_cmd setenv bootargs \$(console) root=/dev/mtdblock4 rw \$(ip) \$(me
 
 setenv update-locs run uboot_loc_cmd\;run kernel_loc_cmd\;run jffs2_loc_cmd\;run defenv_loc_cmd\;run rootfs_nfs_loc_cmd\;saveenv
 setenv update-defenv run defenv_loc_cmd\;tftp \$(loadaddr) \$(defenv_loc)\;setenv filesize\;autoscr \$(loadaddr)\;run update-locs
-setenv update-uboot run uboot_loc_cmd\;tftp \$(loadaddr) \$(uboot_loc)\;setenv filesize\;update_uboot \$(loadaddr) c0000 100000 40000
+setenv update-uboot run uboot_loc_cmd\;tftp \$(loadaddr) \$(uboot_loc)\;setenv filesize\;write_uboot \$(loadaddr) c0000 100000 40000
 setenv update-kernel run jffs2_loc_cmd\;tftp \$(loadaddr) \$(jffs2_loc)\;setenv filesize\;nand erase 1c0000 500000\;nand write.jffs2 \$(loadaddr) 1c0000 500000
 setenv update-rootfs run rootfs_loc_cmd\;tftp \$(loadaddr) \$(rootfs_loc)\;nand erase 6c0000\;nand write.yaffs \$(loadaddr) 6c0000 \$(filesize)\;setenv filesize
 
