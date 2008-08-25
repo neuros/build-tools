@@ -72,6 +72,19 @@ cd vlc-build-davinci
 if [ ! -f Makefile ] ; then
    ../configure-neuros.sh
 fi
+
+# Clean the davinci module all the time, forcing it to rebuild.
+# This is necessary since vlc build script won't detect changes in 
+# TI libraries it depend on, and won't rebuild when they change, but
+# we need that to happen. This is very ugly.
+# Alternatively we can do some messing with md5sum, but that would
+# require such tool as dependency, and even if it's pretty standard
+# it's better to keep deps to a minumum. Plus, the module rebuild is
+# quite fast anyway.
+if [ -d modules/codec/davinci ] ; then
+   make -C modules/codec/davinci clean
+fi
+
 make
 install_vlc
 
