@@ -11,7 +11,7 @@ DL_DIR = "##oebase##/downloads"
 ENABLE_BINARY_LOCALE_GENERATION = "0"
 
 # Uncomment this to enable parallel make
-# PARALLEL_MAKE = "-j 4"
+PARALLEL_MAKE = "-j 4"
 
 # Local overlay for recipes.
 # This allow us to override some of the upstream recipes from oe.org
@@ -23,3 +23,12 @@ BBFILE_PATTERN_upstream = "##oepath##/packages/"
 BBFILE_PATTERN_local = "##localpackages##/packages/"
 BBFILE_PRIORITY_upstream = "5"
 BBFILE_PRIORITY_local = "10"
+
+# This disable locales generation. Locales generation for some sick
+# reason can't be done on the host, so it need to install qemu and
+# a load of other stuff to be able to run it in emulation on the 
+# target. However, beside being an huge waste of time, it's also not
+# working on some 64bit systems. So we just disable locales for now,
+# and will probably install the ones we need pre-generated or something
+# later on.
+IMAGE_LINGUAS = ""
