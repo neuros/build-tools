@@ -77,8 +77,10 @@ install:
 	@$(MAKE) --no-print-directory -C $(KERNEL_DIR) modules_install
 	@echo "Installing busybox."
 	@$(MAKE) --no-print-directory -C busybox install
-	@$(MAKE) --no-print-directory -C applications/app-demos install
 	@$(MAKE) --no-print-directory -C build-tools/yaffs-tools install
+	@$(MAKE) --no-print-directory -C build-tools/external-components install
+	@$(MAKE) --no-print-directory -C build-tools/qt-plugins install
+	@$(MAKE) --no-print-directory -C applications/app-demos install
 
 	@./images/build_pkg
 
