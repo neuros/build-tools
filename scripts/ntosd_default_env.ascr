@@ -8,6 +8,10 @@ setenv defenv_fname default_env.img
 setenv defenv_loc /images/default_env.img
 setenv defenv_loc_cmd setenv defenv_loc \$(tftp_root)/\$(defenv_fname)
 
+setenv ubl_fname ubl_davinci_nand.bin
+setenv ubl_loc /images/ubl_davinci_nand.bin
+setenv ubl_loc_cmd setenv ubl_loc \$(tftp_root)/\$(ubl_fname)\;setenv ubl_desc \$(tftp_root)/ubl_desc
+
 setenv uboot_fname u-boot.bin
 setenv uboot_loc /images/u-boot.bin
 setenv uboot_loc_cmd setenv uboot_loc \$(tftp_root)/\$(uboot_fname)\;setenv uboot_desc \$(tftp_root)/uboot_desc
@@ -40,6 +44,7 @@ setenv yaffs_cmd setenv bootargs \$(console) root=/dev/mtdblock4 rw \$(ip) \$(me
 
 setenv update-locs run uboot_loc_cmd\;run kernel_loc_cmd\;run jffs2_loc_cmd\;run defenv_loc_cmd\;run rootfs_nfs_loc_cmd\;saveenv
 setenv update-defenv run defenv_loc_cmd\;tftp \$(loadaddr) \$(defenv_loc)\;setenv filesize\;autoscr \$(loadaddr)\;run update-locs
+setenv update-ubl run ubl_loc_cmd\;tftp \$(loadaddr) \$(ubl_desc)\;tftp \$(ubootaddr) \$(ubl_loc)\;setenv filesize\;nand erase 20000 20000\;nand write \$(loadaddr) 20000 20000
 setenv update-uboot run uboot_loc_cmd\;tftp \$(loadaddr) \$(uboot_loc)\;setenv filesize\;write_uboot \$(loadaddr) c0000 100000 40000
 setenv update-kernel run jffs2_loc_cmd\;tftp \$(loadaddr) \$(jffs2_loc)\;setenv filesize\;nand erase 1c0000 500000\;nand write.jffs2 \$(loadaddr) 1c0000 500000
 setenv update-rootfs run rootfs_loc_cmd\;tftp \$(loadaddr) \$(rootfs_loc)\;nand erase 6c0000\;nand write.yaffs \$(loadaddr) 6c0000 \$(filesize)\;setenv filesize

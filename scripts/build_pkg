@@ -17,6 +17,7 @@ IMAGES=${PRJROOT}/images
 PKGTOOL_DIR=${PRJROOT}/upk
 
 ENV_IMG=default_env.img
+UBL_IMG=ubl_davinci_nand.bin
 UBOOT_IMG=u-boot.bin
 KENEL_IMG=uImage
 JFFS2_IMG=uImage.jffs2
@@ -109,8 +110,8 @@ echo "${ROOTFS_VER}" > ${ROOTFS_VER_FILE}
 
 # generate the osd20.pkg
 echo ""
-echo "./${PKG_TOOL} ${PKG_NAME} 'Developer UPK on ${DATESTR}' ${ENV_IMG} ${UBOOT_IMG} ${JFFS2_IMG} ${YAFFS2_IMG}"
-./${PKG_TOOL} ${PKG_NAME} "Developer UPK on ${DATESTR}" ${ENV_IMG} ${UBOOT_IMG} ${JFFS2_IMG} ${YAFFS2_IMG}
+echo "./${PKG_TOOL} ${PKG_NAME} 'Developer UPK on ${DATESTR}' ${ENV_IMG} ${UBL_IMG} ${UBOOT_IMG} ${JFFS2_IMG} ${YAFFS2_IMG}"
+./${PKG_TOOL} ${PKG_NAME} "Developer UPK on ${DATESTR}" ${ENV_IMG} ${UBL_IMG} ${UBOOT_IMG} ${JFFS2_IMG} ${YAFFS2_IMG}
 
 
 exit 0
