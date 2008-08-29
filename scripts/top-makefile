@@ -27,7 +27,7 @@ help:
 	@echo ""
 
 # Mark off the all
-all: u-boot linux busybox applications
+all: u-boot linux busybox external-components qt-plugins applications
 
 config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 # Configure Neuros BSP
@@ -37,7 +37,7 @@ config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 # busybox config
 #	@$(MAKE) -C sysapps/busybox $@
 
-.PHONY: u-boot linux busybox binary-components vlc
+.PHONY: u-boot linux busybox binary-components external-components qt-plugins vlc
 
 u-boot:
 ifeq (u-boot/include/config.mk,$(wildcard u-boot/include/config.mk))
@@ -55,6 +55,12 @@ busybox:
 
 applications:
 	@$(MAKE) --no-print-directory -C applications/app-demos
+
+external-components:
+	@$(MAKE) --no-print-directory -C external-components
+
+qt-plugins:
+	@$(MAKE) --no-print-directory -C qt-plugins all
 
 install:
 	@echo "Installing u-boot"
