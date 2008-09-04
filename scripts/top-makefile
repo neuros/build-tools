@@ -9,6 +9,11 @@ ifndef PRJROOT
     $(error You must first source the BSP environment: "source neuros-env")
 endif
 
+QT_NWM := nwm
+QT_PHOTO := photoalbum
+QT_MENU := mainmenu
+QT_APPS     := $(QT_NWM) $(QT_MENU) $(QT_PHOTO)
+
 KERNEL_DIR := linux-davinci-2.6
 
 .PHONY: config menuconfig oldconfig silentoldconfig defconfig
@@ -27,7 +32,7 @@ help:
 	@echo ""
 
 # Mark off the all
-all: u-boot linux busybox external-components qt-plugins applications
+all: u-boot linux busybox external-components qt-plugins applications qt-applications
 
 config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 # Configure Neuros BSP
@@ -82,7 +87,23 @@ install:
 	@$(MAKE) --no-print-directory -C qt-plugins install
 	@$(MAKE) --no-print-directory -C applications/app-demos install
 
+	# Qt application install. This is because qmake works different than plan make
+	@for dir in  $(QT_APPS); do \
+		${NQMAKE} -recursive -nocache applications/app-$$dir/$$dir.pro && \
+		make -C applications/app-$$dir install || exit 1 ;\
+	done;
+
 	@./images/build_pkg
+
+
+qt-applications:
+
+	@for dir in  $(QT_APPS); do \
+		${NQMAKE} -recursive -nocache applications/app-$$dir/$$dir.pro && \
+		make -C applications/app-$$dir all || exit 1 ;\
+	done;
+
+
 
 binary-components:
 	@${MAKE} -C binary-components install
