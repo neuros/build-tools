@@ -32,7 +32,7 @@ help:
 	@echo ""
 
 # Mark off the all
-all: u-boot linux busybox external-components qt-plugins applications qt-applications
+all: u-boot linux ubl busybox external-components qt-plugins applications qt-applications
 
 config menuconfig oldconfig silentoldconfig defconfig %_defconfig:
 # Configure Neuros BSP
@@ -67,6 +67,9 @@ external-components:
 qt-plugins:
 	@$(MAKE) --no-print-directory -C qt-plugins all
 
+ubl:
+	@$(MAKE) --no-print-directory -C ti-uart-boot all
+
 install:
 	@echo "Installing u-boot"
 	@$(MAKE) --no-print-directory -C u-boot install
@@ -92,6 +95,9 @@ install:
 		${NQMAKE} -recursive -nocache applications/app-$$dir/$$dir.pro && \
 		make -C applications/app-$$dir install || exit 1 ;\
 	done;
+
+	# Install UBL and UBL version to images
+	@$(MAKE) --no-print-directory -C ti-uart-boot install
 
 	@./images/build_pkg
 
@@ -119,5 +125,6 @@ clean:
 	make -C u-boot mrproper
 	make -C $(KERNEL_DIR) mrproper
 	make -C busybox cleanall
+	make -C ti-uart-boot clean
 
 	@rm -f *~
