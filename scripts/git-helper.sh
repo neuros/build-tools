@@ -111,7 +111,7 @@ clone_pub()
 	fi
 	echo
 	echo "cloning ${DST_PATH}/${repo} ..."
-	git clone ${GIT_PATH_PUB}/${repo} ${DST_PATH}/${repo}
+	git clone ${GIT_PATH_PUB}/${repo}.git ${DST_PATH}/${repo}
     done
 
     if [ ! -e ${APP_DIR} ]
@@ -126,7 +126,7 @@ clone_pub()
 	fi
 	echo
 	echo "cloning ${DST_PATH}/${repo} ..."
-	git clone ${GIT_PATH_PUB}/${repo} ${APP_DST_PATH}/${repo}
+	git clone ${GIT_PATH_PUB}/${repo}.git ${APP_DST_PATH}/${repo}
     done
 
     if [ ! -e ${LIB_DIR} ]
@@ -141,7 +141,7 @@ clone_pub()
 	fi
 	echo
 	echo "cloning ${DST_PATH}/${repo} ..."
-	git clone ${GIT_PATH_PUB}/${repo} ${LIB_DST_PATH}/${repo}
+	git clone ${GIT_PATH_PUB}/${repo}.git ${LIB_DST_PATH}/${repo}
     done
     
     for repo in "${PUBLIC_REPO[@]}" ; do
@@ -152,7 +152,7 @@ clone_pub()
 	fi
 	echo
 	echo "cloning ${DST_PATH}/${repo} ..."
-	git clone ${GIT_PATH_PUB}/${repo} ${DST_PATH}/${repo}
+	git clone ${GIT_PATH_PUB}/${repo}.git ${DST_PATH}/${repo}
     done
 
     repo=vlc
@@ -175,7 +175,7 @@ clone_priv()
 	fi
 	echo
 	echo "cloning ${DST_PATH}/${repo} ..."
-	git clone ${GIT_PATH_PRIV}/${repo} ${DST_PATH}/${repo}
+	git clone ${GIT_PATH_PRIV}/${repo}.git ${DST_PATH}/${repo}
     done
 }
 
@@ -379,43 +379,22 @@ help()
     echo ""
 }
 
-## cheap ssh access test.
-detect_access()
-{
-	if [ -z ${ACCESS} ] ; then
-		ACCESS=read-only
-
-		echo "Checking access permission (you may be asked confirmation from ssh)"
-		ssh git@git.neuros.com.cn 'uname -a' > /tmp/neuros-git-access.txt || echo "No access."
-
-		if [ -s /tmp/neuros-git-access.txt ] ; then
-			ACCESS=read-write
-		fi
-	else
-		if [ ! $ACCESS = read-write ] ; then
-			# ensure legal values
-			$ACCESS=read-only
-		fi
-	fi
-	echo "Detected access mode: ${ACCESS}"
-}
-
-
 #####main
 if [ "$#" -lt "1" ]; then
     help
 else
-	# Check access if none was set on env variables or script head
-	if [ -z $ACCESS ] ; then
-		detect_access
+	# Set up repositories based on the value of env.
+	# It is set only on the boxes of developers with commit access.
+	ACCESS="read-only"
+	if [ "${NEUROS_GIT_ACCESS}" == "rw" ] ; then
+		ACCESS="read-write"
 	fi
 
-	# Normalize value of ACCESS and set up repositories based on that value
 	if [ "${ACCESS}" = "read-write" ] ; then
-		GIT_PATH_PUB=ssh://git@git.neuros.com.cn/git/git-pub/osd20 ;
-		GIT_PATH_PRIV=ssh://git@git.neuros.com.cn/git/git-priv/osd20 ;
+		GIT_PATH_PUB=git@github.com:neuros ;
+		GIT_PATH_PRIV=git@github.com:neuros ;
 	else
-		GIT_PATH_PUB=git://git.neurostechnology.com/git ;
+		GIT_PATH_PUB=git://github.com/neuros ;
 	fi
 	echo "Accessing reposiories as: ${ACCESS}"
 
