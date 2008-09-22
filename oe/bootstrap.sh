@@ -28,7 +28,7 @@ echo -n -e "\n# Checking necessary tools"
 [ -n "$GITPATH" ] || which git > /dev/null || NOGIT=1
 [ -n "$PYTHONPATH" ] || which python > /dev/null || NOPYTHON=1
 
-if [ "$NOSVN" == "1" -o "$NOGIT" == "1" -o "$NOPYTHON" == "1" ] ; then
+if [ "$NOSVN" = "1" -o "$NOGIT" = "1" -o "$NOPYTHON" = "1" ] ; then
 	echo "\nYou are missing the following tools on your host:"
 	[ -z "$NOSVN" ] || echo "* subversion (also known as svn) [override with SVNPATH]"
 	[ -z "$NOGIT" ] || echo "* git (also known as git-core) [override with GITPATH]"
@@ -100,14 +100,14 @@ sed \
 UPDCONF="1"
 if [ -f $OEBASE/build/conf/local.conf ] ; then
 	diff $(dirname $0)/local.conf.base.tmp $OEBASE/build/conf/local.conf > /dev/null
-	if [ $? == 0 ] ; then
+	if [ $? = 0 ] ; then
 		rm `dirname $0`/local.conf.base.tmp
 		UPDCONF="0"
 		echo "New file is same, not updating to preserve bbitbake cache."
 	fi
 fi
 
-if [ "$UPDCONF" == "1" ] ; then
+if [ "$UPDCONF" = "1" ] ; then
 	mv `dirname $0`/local.conf.base.tmp $OEBASE/build/conf/local.conf
 	echo "Ok. Generated file:"
 	echo $OEBASE/build/conf/local.conf
