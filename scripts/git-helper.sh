@@ -68,7 +68,9 @@ PRIVATE_REPO=( \
     "mspflash" \
     "neuros-rtc" \
     "production" \
-    "ticel"
+    "ticel" \
+    "neurostv" \
+    "tvpc" \
 )
 
 ls_pub()
